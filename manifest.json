@@ -1,0 +1,21 @@
+{
+  "name": "FA Sublimações",
+  "short_name": "FA Sublimações",
+  "description": "Loja de canecas personalizadas",
+  "start_url": "index.html",
+  "display": "standalone",
+  "theme_color": "#121212",
+  "background_color": "#121212",
+  "icons": [
+    {
+      "src": "img/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "img/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
