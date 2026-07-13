@@ -3,485 +3,269 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin · Canecas Dashboard</title>
-  <!-- Bootstrap 5 + FontAwesome -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <title>CanecaStore - Canecas Personalizadas</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      background: #f0f2f5;
-      padding: 2rem 0;
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f6fa;
+      min-height: 100vh;
     }
-    .dashboard-header {
-      background: white;
-      padding: 1.5rem 2rem;
-      border-radius: 20px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.04);
-      margin-bottom: 2rem;
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
     }
-    .card-product {
-      transition: all 0.25s ease;
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 24px;
+      background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%);
       border-radius: 16px;
-      overflow: hidden;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+      margin-bottom: 32px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .logo-icon {
+      width: 44px; height: 44px;
       background: white;
-      border: 1px solid rgba(0,0,0,0.04);
-    }
-    .card-product:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 12px 28px rgba(0,0,0,0.08);
-    }
-    .card-img-top {
-      height: 200px;
-      object-fit: cover;
-      background: #f8f9fa;
-    }
-    .badge-status {
-      font-weight: 500;
-      letter-spacing: 0.3px;
-      padding: 0.4rem 0.8rem;
-    }
-    .btn-action {
-      width: 38px;
-      height: 38px;
-      border-radius: 10px;
-      display: inline-flex;
+      border-radius: 50%;
+      display: flex;
       align-items: center;
       justify-content: center;
-      transition: all 0.15s;
+      font-size: 24px;
     }
-    .btn-action:hover {
+    .logo h1 {
+      color: white;
+      font-size: 24px;
+      font-weight: 800;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+    }
+    .nav-links a {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 10px;
+      background: white;
+      color: #ff6b6b;
+      font-weight: 700;
+      text-decoration: none;
+      display: inline-block;
+      transition: all 0.3s;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .nav-links a:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    }
+    .hero {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .hero h2 {
+      font-size: 36px;
+      color: #2d3436;
+      margin-bottom: 8px;
+    }
+    .hero p {
+      color: #636e72;
+      font-size: 18px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px;
+    }
+    .card {
+      background: white;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      transition: all 0.3s ease;
+    }
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+    }
+    .card-img-wrap {
+      position: relative;
+      overflow: hidden;
+    }
+    .card-img-wrap img {
+      width: 100%;
+      height: 260px;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.3s;
+    }
+    .card:hover .card-img-wrap img {
       transform: scale(1.05);
     }
-    .empty-state {
-      padding: 4rem 1rem;
-      text-align: center;
-      color: #6c7a8d;
-    }
-    .empty-state i {
-      font-size: 4rem;
-      opacity: 0.3;
-      margin-bottom: 1rem;
-    }
-    .modal-content {
+    .card-price {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: linear-gradient(135deg, #ff6b6b, #feca57);
+      color: white;
+      padding: 6px 14px;
       border-radius: 20px;
-      border: none;
-    }
-    .modal-header {
-      border-bottom: none;
-      padding-bottom: 0;
-    }
-    .modal-footer {
-      border-top: none;
-      padding-top: 0;
-    }
-    .form-control, .form-select {
-      border-radius: 12px;
-      border: 1.5px solid #e9ecef;
-      padding: 0.6rem 1rem;
-    }
-    .form-control:focus, .form-select:focus {
-      border-color: #0d6efd;
-      box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.1);
-    }
-    .btn-primary {
-      border-radius: 12px;
-      padding: 0.6rem 1.8rem;
-      font-weight: 600;
-    }
-    .btn-outline-primary {
-      border-radius: 12px;
-    }
-    .price-tag {
-      font-size: 1.2rem;
       font-weight: 700;
-      color: #0d6efd;
+      font-size: 14px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
     }
-    .product-name {
+    .card-body {
+      padding: 20px;
+    }
+    .card-body h3 {
+      margin: 0 0 8px 0;
+      font-size: 20px;
+      color: #2d3436;
+    }
+    .card-body p {
+      margin: 0 0 16px 0;
+      color: #636e72;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .btn-buy {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #ff6b6b, #feca57);
+      color: white;
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 15px rgba(255,107,107,0.3);
+    }
+    .btn-buy:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 20px rgba(255,107,107,0.4);
+    }
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      padding: 16px 24px;
+      border-radius: 12px;
+      color: white;
       font-weight: 600;
-      font-size: 1rem;
-      margin-bottom: 0.25rem;
+      z-index: 2000;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      display: none;
+      animation: slideUp 0.3s ease;
     }
-    @media (max-width: 576px) {
-      .dashboard-header {
-        padding: 1rem;
-      }
-      .card-img-top {
-        height: 160px;
-      }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <!-- HEADER -->
-    <div class="dashboard-header d-flex flex-wrap align-items-center justify-content-between">
-      <div>
-        <h4 class="mb-0 fw-bold">
-          <i class="fas fa-mug-saucer text-primary me-2"></i>Canecas Admin
-        </h4>
-        <small class="text-muted">Gerenciamento de produtos</small>
+    <nav>
+      <div class="logo">
+        <div class="logo-icon">☕</div>
+        <h1>CanecaStore</h1>
       </div>
-      <button class="btn btn-primary rounded-pill px-4 mt-2 mt-sm-0" data-bs-toggle="modal" data-bs-target="#modalProduct" onclick="openModal()">
-        <i class="fas fa-plus me-2"></i>Nova caneca
-      </button>
+      <div class="nav-links">
+        <a href="admin.html">🔐 Admin</a>
+      </div>
+    </nav>
+
+    <div class="hero">
+      <h2>Canecas Personalizadas</h2>
+      <p>Escolha a sua caneca favorita e personalize do seu jeito!</p>
     </div>
 
-    <!-- GRID -->
-    <div id="productGrid" class="row g-4">
-      <!-- Renderizado via JavaScript -->
-    </div>
-
-    <!-- FOOTER INFO -->
-    <div class="text-center text-muted mt-5 small">
-      <i class="fas fa-database me-1"></i> Dados salvos localmente (localStorage) · v1.0
-    </div>
+    <div class="grid" id="loja-grid"></div>
   </div>
 
-  <!-- MODAL: ADICIONAR/EDITAR -->
-  <div class="modal fade" id="modalProduct" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content shadow">
-        <div class="modal-header">
-          <h5 class="modal-title fw-bold" id="modalLabel">
-            <i class="fas fa-pen-to-square me-2"></i>Nova caneca
-          </h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body">
-          <form id="productForm" autocomplete="off">
-            <input type="hidden" id="productId" value="">
-            
-            <div class="mb-3">
-              <label class="form-label fw-semibold">Nome da caneca</label>
-              <input type="text" class="form-control" id="productName" placeholder="Ex: Caneca Star Wars" required>
-            </div>
-            
-            <div class="mb-3">
-              <label class="form-label fw-semibold">Preço (R$)</label>
-              <input type="number" step="0.01" class="form-control" id="productPrice" placeholder="39,90" required>
-            </div>
-            
-            <div class="mb-3">
-              <label class="form-label fw-semibold">URL da imagem</label>
-              <input type="text" class="form-control" id="productImage" placeholder="https://exemplo.com/caneca.jpg">
-              <small class="text-muted">Deixe em branco para usar imagem padrão</small>
-            </div>
-            
-            <div class="mb-2">
-              <label class="form-label fw-semibold">Status</label>
-              <select class="form-select" id="productStatus">
-                <option value="ativo">Ativo</option>
-                <option value="rascunho">Rascunho</option>
-              </select>
-            </div>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Cancelar</button>
-          <button type="button" class="btn btn-primary rounded-pill px-5" id="saveProductBtn" onclick="saveProduct()">
-            <i class="fas fa-check me-2"></i>Salvar
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
+  <div class="toast" id="toast"></div>
 
-  <!-- MODAL: CONFIRMAR REMOÇÃO -->
-  <div class="modal fade" id="modalDelete" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-sm">
-      <div class="modal-content shadow">
-        <div class="modal-body text-center p-4">
-          <i class="fas fa-trash-can text-danger" style="font-size: 2.8rem;"></i>
-          <h5 class="mt-3 fw-bold">Remover caneca?</h5>
-          <p class="text-muted">Esta ação não pode ser desfeita.</p>
-          <input type="hidden" id="deleteProductId">
-          <div class="d-flex gap-2 justify-content-center mt-3">
-            <button class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Cancelar</button>
-            <button class="btn btn-danger rounded-pill px-4" onclick="confirmDelete()">
-              <i class="fas fa-check me-2"></i>Remover
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-  
   <script>
-    // ============================================================
-    // BACKEND SIMULADO (localStorage) - compatível com GitHub Pages
-    // ============================================================
-    const STORAGE_KEY = 'canecas_products';
-
-    // Produtos iniciais (seed)
-    function getDefaultProducts() {
-      return [
-        { 
-          id: 1, 
-          name: 'Caneca Star Wars', 
-          price: 39.90, 
-          image: 'https://placehold.co/400x300/2b2d42/white?text=Star+Wars', 
-          status: 'ativo' 
-        },
-        { 
-          id: 2, 
-          name: 'Caneca Gato Fofo', 
-          price: 29.90, 
-          image: 'https://placehold.co/400x300/ffb3ba/333?text=Gato', 
-          status: 'ativo' 
-        },
-        { 
-          id: 3, 
-          name: 'Caneca Programador', 
-          price: 49.90, 
-          image: 'https://placehold.co/400x300/2b2d42/white?text=</>', 
-          status: 'rascunho' 
-        },
-      ];
-    }
-
-    // ========== CRUD OPERATIONS ==========
-    function getProducts() {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        try { 
-          const parsed = JSON.parse(stored);
-          // Garantir que todos os produtos tenham os campos necessários
-          return parsed.map(p => ({
-            ...p,
-            image: p.image || 'https://placehold.co/400x300/e9ecef/6c757d?text=Caneca',
-            status: p.status || 'rascunho'
-          }));
-        } catch (e) {
-          return getDefaultProducts();
-        }
-      } else {
-        const defaults = getDefaultProducts();
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(defaults));
-        return defaults;
+    let produtos = JSON.parse(localStorage.getItem('canecastore_produtos')) || [
+      {
+        id: 1,
+        nome: "Caneca Programador",
+        descricao: "Caneca preta com a frase 'It works on my machine'. Perfeita para desenvolvedores!",
+        preco: 39.90,
+        imagem: "https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?w=400&h=400&fit=crop"
+      },
+      {
+        id: 2,
+        nome: "Caneca Café & Código",
+        descricao: "Caneca branca com estampa minimalista de xícara e código. Ideal para o café da manhã.",
+        preco: 34.90,
+        imagem: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&h=400&fit=crop"
+      },
+      {
+        id: 3,
+        nome: "Caneca Gamer",
+        descricao: "Caneca com LED colorido e design gamer. Ilumina sua mesa enquanto você joga!",
+        preco: 59.90,
+        imagem: "https://images.unsplash.com/photo-1577937927133-66ef06acdf18?w=400&h=400&fit=crop"
+      },
+      {
+        id: 4,
+        nome: "Caneca Minimalista",
+        descricao: "Design clean e elegante em tons pastel. Para quem gosta de simplicidade.",
+        preco: 29.90,
+        imagem: "https://images.unsplash.com/photo-1517256064527-09c73fc73e38?w=400&h=400&fit=crop"
+      },
+      {
+        id: 5,
+        nome: "Caneca Vintage",
+        descricao: "Estilo retrô com estampa de café antigo. Perfeita para colecionadores.",
+        preco: 44.90,
+        imagem: "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400&h=400&fit=crop"
+      },
+      {
+        id: 6,
+        nome: "Caneca Mágica",
+        descricao: "Muda de cor com líquido quente! Surpreenda seus amigos com essa caneca especial.",
+        preco: 49.90,
+        imagem: "https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=400&h=400&fit=crop"
       }
+    ];
+
+    function salvarProdutos() {
+      localStorage.setItem('canecastore_produtos', JSON.stringify(produtos));
     }
 
-    function saveProducts(products) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(products));
-    }
-
-    function generateId(products) {
-      if (products.length === 0) return 1;
-      return Math.max(...products.map(p => p.id)) + 1;
-    }
-
-    function createProduct(productData) {
-      const products = getProducts();
-      const newProduct = {
-        ...productData,
-        id: generateId(products),
-        image: productData.image || 'https://placehold.co/400x300/e9ecef/6c757d?text=Caneca',
-        status: productData.status || 'rascunho'
-      };
-      products.push(newProduct);
-      saveProducts(products);
-      return newProduct;
-    }
-
-    function updateProduct(id, updatedData) {
-      const products = getProducts();
-      const index = products.findIndex(p => p.id === id);
-      if (index === -1) throw new Error('Produto não encontrado');
-      
-      products[index] = { 
-        ...products[index], 
-        ...updatedData,
-        image: updatedData.image || products[index].image || 'https://placehold.co/400x300/e9ecef/6c757d?text=Caneca'
-      };
-      saveProducts(products);
-      return products[index];
-    }
-
-    function deleteProduct(id) {
-      let products = getProducts();
-      products = products.filter(p => p.id !== id);
-      saveProducts(products);
-      return true;
-    }
-
-    // ========== RENDER GRID ==========
-    function renderProducts() {
-      const grid = document.getElementById('productGrid');
-      const products = getProducts();
-
-      if (products.length === 0) {
-        grid.innerHTML = `
-          <div class="col-12">
-            <div class="empty-state">
-              <i class="fas fa-mug-saucer"></i>
-              <h5 class="fw-normal">Nenhuma caneca cadastrada</h5>
-              <p class="text-muted">Clique em "Nova caneca" para adicionar seu primeiro produto.</p>
-            </div>
+    function renderLoja() {
+      const grid = document.getElementById('loja-grid');
+      grid.innerHTML = produtos.map(p => `
+        <div class="card">
+          <div class="card-img-wrap">
+            <img src="${p.imagem}" alt="${p.nome}">
+            <div class="card-price">R$ ${p.preco.toFixed(2).replace('.', ',')}</div>
           </div>
-        `;
-        return;
-      }
-
-      grid.innerHTML = products.map(p => `
-        <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
-          <div class="card card-product h-100">
-            <img 
-              src="${p.image || 'https://placehold.co/400x300/e9ecef/6c757d?text=Caneca'}" 
-              class="card-img-top" 
-              alt="${p.name}"
-              onerror="this.src='https://placehold.co/400x300/e9ecef/6c757d?text=Caneca'"
-            >
-            <div class="card-body d-flex flex-column">
-              <div class="d-flex justify-content-between align-items-start mb-2">
-                <h6 class="product-name">${p.name}</h6>
-                <span class="badge rounded-pill bg-${p.status === 'ativo' ? 'success' : 'secondary'} badge-status">
-                  ${p.status === 'ativo' ? 'Ativo' : 'Rascunho'}
-                </span>
-              </div>
-              <p class="price-tag">R$ ${p.price.toFixed(2)}</p>
-              <div class="d-flex gap-2 mt-auto pt-2">
-                <button class="btn btn-outline-primary btn-action" onclick="editProduct(${p.id})" title="Editar">
-                  <i class="fas fa-pen"></i>
-                </button>
-                <button class="btn btn-outline-danger btn-action" onclick="openDeleteModal(${p.id})" title="Remover">
-                  <i class="fas fa-trash-can"></i>
-                </button>
-                <button class="btn btn-outline-secondary btn-action ms-auto" onclick="toggleStatus(${p.id})" title="Alternar status">
-                  <i class="fas fa-${p.status === 'ativo' ? 'eye' : 'eye-slash'}"></i>
-                </button>
-              </div>
-            </div>
+          <div class="card-body">
+            <h3>${p.nome}</h3>
+            <p>${p.descricao}</p>
+            <button class="btn-buy" onclick="comprar('${p.nome}')">🛒 Comprar Agora</button>
           </div>
         </div>
       `).join('');
     }
 
-    // ========== MODAL CONTROLES ==========
-    function openModal(productData = null) {
-      const modal = new bootstrap.Modal(document.getElementById('modalProduct'));
-      const form = document.getElementById('productForm');
-      form.reset();
-      document.getElementById('productId').value = '';
-
-      if (productData) {
-        document.getElementById('modalLabel').innerHTML = `<i class="fas fa-pen-to-square me-2"></i>Editar caneca`;
-        document.getElementById('productId').value = productData.id;
-        document.getElementById('productName').value = productData.name;
-        document.getElementById('productPrice').value = productData.price;
-        document.getElementById('productImage').value = productData.image || '';
-        document.getElementById('productStatus').value = productData.status || 'rascunho';
-      } else {
-        document.getElementById('modalLabel').innerHTML = `<i class="fas fa-plus me-2"></i>Nova caneca`;
-      }
-      
-      modal.show();
+    function comprar(nome) {
+      const toast = document.getElementById('toast');
+      toast.textContent = `🛒 "${nome}" adicionado ao carrinho! (Pagamento em breve)`;
+      toast.style.background = '#00b894';
+      toast.style.display = 'block';
+      setTimeout(() => { toast.style.display = 'none'; }, 3000);
     }
 
-    function saveProduct() {
-      const id = document.getElementById('productId').value;
-      const name = document.getElementById('productName').value.trim();
-      const price = parseFloat(document.getElementById('productPrice').value);
-      const image = document.getElementById('productImage').value.trim();
-      const status = document.getElementById('productStatus').value;
-
-      // Validações
-      if (!name) {
-        alert('Por favor, informe o nome da caneca.');
-        return;
-      }
-      if (isNaN(price) || price <= 0) {
-        alert('Por favor, informe um preço válido.');
-        return;
-      }
-
-      const productData = {
-        name,
-        price,
-        image: image || '',
-        status
-      };
-
-      try {
-        if (id) {
-          // Editar
-          updateProduct(parseInt(id), productData);
-        } else {
-          // Criar
-          createProduct(productData);
-        }
-        
-        // Fechar modal e atualizar grid
-        bootstrap.Modal.getInstance(document.getElementById('modalProduct')).hide();
-        renderProducts();
-      } catch (error) {
-        alert('Erro ao salvar produto: ' + error.message);
-      }
-    }
-
-    function editProduct(id) {
-      const products = getProducts();
-      const product = products.find(p => p.id === id);
-      if (product) {
-        openModal(product);
-      }
-    }
-
-    function openDeleteModal(id) {
-      document.getElementById('deleteProductId').value = id;
-      new bootstrap.Modal(document.getElementById('modalDelete')).show();
-    }
-
-    function confirmDelete() {
-      const id = parseInt(document.getElementById('deleteProductId').value);
-      try {
-        deleteProduct(id);
-        bootstrap.Modal.getInstance(document.getElementById('modalDelete')).hide();
-        renderProducts();
-      } catch (error) {
-        alert('Erro ao remover produto: ' + error.message);
-      }
-    }
-
-    function toggleStatus(id) {
-      const products = getProducts();
-      const product = products.find(p => p.id === id);
-      if (product) {
-        const newStatus = product.status === 'ativo' ? 'rascunho' : 'ativo';
-        updateProduct(id, { status: newStatus });
-        renderProducts();
-      }
-    }
-
-    // ========== INICIALIZAÇÃO ==========
-    document.addEventListener('DOMContentLoaded', () => {
-      renderProducts();
-      
-      // Garantir que o modal seja resetado ao fechar
-      document.getElementById('modalProduct').addEventListener('hidden.bs.modal', function () {
-        document.getElementById('productForm').reset();
-        document.getElementById('productId').value = '';
-      });
-    });
-
-    // ========== EXPORTAR PARA TESTES (opcional) ==========
-    // Permite acesso ao "backend" via console para debug
-    window.__backend = {
-      getProducts,
-      createProduct,
-      updateProduct,
-      deleteProduct,
-      renderProducts
-    };
+    salvarProdutos();
+    renderLoja();
   </script>
 </body>
 </html>
