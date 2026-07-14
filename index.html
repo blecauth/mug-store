@@ -6,7 +6,7 @@
   <title>FA Sublimações · Canecas personalizadas</title>
   <meta name="description" content="Loja de canecas personalizadas, canecas mágicas, long drink, squeezes, azulejos e muito mais. Qualidade e criatividade em cada detalhe.">
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#121212">
+  <meta name="theme-color" content="#FFFFFF">
   <meta property="og:title" content="FA Sublimações · Canecas personalizadas">
   <meta property="og:description" content="Loja virtual de canecas e presentes personalizados com alta qualidade.">
   <meta property="og:type" content="website">
@@ -14,31 +14,38 @@
   <meta property="og:image" content="img/og-image.jpg">
   <link rel="icon" href="img/favicon.ico" type="image/x-icon">
   <link rel="stylesheet" href="css/style.css">
-  <!-- Ícones apenas para demonstração, sem dependência externa -->
 </head>
 <body>
+  <!-- HEADER -->
   <header class="header" role="banner">
     <div class="header-top container">
-      <div class="logo" aria-label="FA Sublimações">
+      <div class="logo">
         <span class="logo-icon">☕</span>
         <span class="logo-text">FA<span class="highlight">Sublimações</span></span>
       </div>
+      <div class="header-actions">
+        <a href="#" class="whatsapp-header" aria-label="WhatsApp">
+          <span class="icon">💬</span> <span class="label">WhatsApp</span>
+        </a>
+        <button class="cart-icon" aria-label="Carrinho">
+          🛒 <span class="cart-badge">0</span>
+        </button>
+        <button class="menu-toggle" id="menuToggle" aria-label="Menu">☰</button>
+      </div>
+    </div>
+    
+    <!-- Barra de Pesquisa -->
+    <div class="search-container container">
       <div class="search-bar">
         <input type="search" id="searchInput" placeholder="Buscar produto, código ou categoria..." aria-label="Buscar produtos">
         <button id="searchBtn" aria-label="Pesquisar">🔍</button>
       </div>
-      <div class="header-actions">
-        <a href="#" class="whatsapp-header" aria-label="WhatsApp" title="Fale conosco">
-          <span class="icon">💬</span> <span class="label">WhatsApp</span>
-        </a>
-        <button class="cart-icon" aria-label="Carrinho" title="Carrinho (ilustrativo)">
-          🛒 <span class="cart-badge">0</span>
-        </button>
-        <button class="menu-toggle" id="menuToggle" aria-label="Menu" aria-expanded="false">☰</button>
-      </div>
     </div>
-    <nav class="main-nav" id="mainNav" role="navigation" aria-label="Categorias">
+
+    <!-- Menu de Categorias -->
+    <nav class="main-nav" id="mainNav" role="navigation">
       <ul class="nav-list container">
+        <li><a href="#" data-category="all" class="active">Todos</a></li>
         <li><a href="#" data-category="canecas">Canecas</a></li>
         <li><a href="#" data-category="canecas-magicas">Canecas Mágicas</a></li>
         <li><a href="#" data-category="long-drink">Long Drink</a></li>
@@ -51,75 +58,88 @@
   </header>
 
   <main>
-    <!-- Banner / Carrossel -->
+    <!-- BANNER -->
     <section class="banner-carousel" aria-label="Destaques">
       <div class="carousel-track" id="carouselTrack">
-        <div class="carousel-slide active" style="background: linear-gradient(135deg, #1e2a2e, #2a3b40);">
-          <div class="slide-content"><h2>Canecas exclusivas</h2><p>Design único para você</p><a href="#" class="btn-primary">Ver ofertas</a></div>
+        <div class="carousel-slide active" style="background: linear-gradient(135deg, #FF6B35, #FF8F65);">
+          <div class="slide-content">
+            <h2>🎨 Canecas Exclusivas</h2>
+            <p>Design único para você</p>
+            <a href="#" class="btn-primary">Ver ofertas</a>
+          </div>
         </div>
-        <div class="carousel-slide" style="background: linear-gradient(135deg, #1e2a2e, #3b4a4f);">
-          <div class="slide-content"><h2>Canecas Mágicas</h2><p>Surpreenda com a mudança de cor</p><a href="#" class="btn-primary">Explorar</a></div>
+        <div class="carousel-slide" style="background: linear-gradient(135deg, #FF6B35, #FFA07A);">
+          <div class="slide-content">
+            <h2>✨ Canecas Mágicas</h2>
+            <p>Surpreenda com a mudança de cor</p>
+            <a href="#" class="btn-primary">Explorar</a>
+          </div>
         </div>
-        <div class="carousel-slide" style="background: linear-gradient(135deg, #1e2a2e, #2d3f3f);">
-          <div class="slide-content"><h2>Linha Long Drink</h2><p>Estilo e sofisticação</p><a href="#" class="btn-primary">Comprar</a></div>
+        <div class="carousel-slide" style="background: linear-gradient(135deg, #E85D2C, #FF8C5A);">
+          <div class="slide-content">
+            <h2>🥤 Linha Long Drink</h2>
+            <p>Estilo e sofisticação</p>
+            <a href="#" class="btn-primary">Comprar</a>
+          </div>
         </div>
       </div>
-      <div class="carousel-controls">
-        <button class="carousel-btn prev" id="carouselPrev" aria-label="Anterior">‹</button>
-        <button class="carousel-btn next" id="carouselNext" aria-label="Próximo">›</button>
-      </div>
+      <button class="carousel-btn prev" id="carouselPrev" aria-label="Anterior">‹</button>
+      <button class="carousel-btn next" id="carouselNext" aria-label="Próximo">›</button>
       <div class="carousel-indicators" id="carouselIndicators"></div>
     </section>
 
-    <!-- Filtros rápidos -->
+    <!-- FILTROS -->
     <section class="filters container" aria-label="Filtros rápidos">
-      <button class="filter-chip active" data-filter="all">Todos</button>
-      <button class="filter-chip" data-filter="promocao">Promoção</button>
-      <button class="filter-chip" data-filter="novo">Novo</button>
-      <button class="filter-chip" data-filter="mais-vendido">Mais vendido</button>
-      <select id="sortSelect" aria-label="Ordenar">
-        <option value="relevancia">Relevância</option>
-        <option value="menor-preco">Menor preço</option>
-        <option value="maior-preco">Maior preço</option>
-      </select>
-    </section>
-
-    <!-- Grid de produtos com skeleton loading -->
-    <section class="products-grid container" id="productsGrid" aria-label="Produtos">
-      <!-- Skeleton cards serão inseridos via JS -->
-    </section>
-
-    <!-- Modal do produto -->
-    <div class="modal" id="productModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-      <div class="modal-content">
-        <button class="modal-close" id="modalClose" aria-label="Fechar modal">✕</button>
-        <div class="modal-body" id="modalBody">
-          <!-- Conteúdo injetado por JS -->
-        </div>
+      <div class="filter-group">
+        <button class="filter-chip active" data-filter="all">Todos</button>
+        <button class="filter-chip" data-filter="promocao">🔥 Promoção</button>
+        <button class="filter-chip" data-filter="novo">✨ Novo</button>
+        <button class="filter-chip" data-filter="mais-vendido">⭐ Mais Vendido</button>
       </div>
-    </div>
+      <div class="sort-group">
+        <select id="sortSelect" aria-label="Ordenar">
+          <option value="relevancia">Relevância</option>
+          <option value="menor-preco">Menor preço</option>
+          <option value="maior-preco">Maior preço</option>
+        </select>
+      </div>
+    </section>
 
-    <!-- Toast -->
-    <div id="toast" class="toast" role="alert" aria-live="polite"></div>
+    <!-- GRADE DE PRODUTOS -->
+    <section class="products-grid container" id="productsGrid" aria-label="Produtos">
+      <!-- Skeleton loading -->
+    </section>
   </main>
 
+  <!-- MODAL -->
+  <div class="modal" id="productModal" role="dialog" aria-modal="true">
+    <div class="modal-content">
+      <button class="modal-close" id="modalClose" aria-label="Fechar">✕</button>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div id="toast" class="toast" role="alert"></div>
+
+  <!-- FOOTER -->
   <footer class="footer" role="contentinfo">
     <div class="container footer-grid">
       <div class="footer-col">
-        <h4>FA Sublimações</h4>
+        <h4>☕ FA Sublimações</h4>
         <p>Canecas personalizadas com amor e criatividade. Feitas sob medida para você.</p>
       </div>
       <div class="footer-col">
-        <h4>Contato</h4>
+        <h4>📱 Contato</h4>
         <p><a href="#" class="whatsapp-link">💬 WhatsApp</a></p>
         <p><a href="#">📷 Instagram</a></p>
         <p><a href="#">📘 Facebook</a></p>
       </div>
       <div class="footer-col">
-        <h4>Endereço</h4>
+        <h4>📍 Endereço</h4>
         <p>Rua das Canecas, 123 - Centro</p>
         <p>São Paulo - SP</p>
-        <div class="map-placeholder">📍 Mapa interativo</div>
+        <div class="map-placeholder">🗺️ Mapa interativo</div>
       </div>
     </div>
     <div class="footer-bottom">
@@ -127,9 +147,7 @@
     </div>
   </footer>
 
-  <!-- Scripts -->
   <script src="js/script.js" defer></script>
-  <!-- Service Worker registrado -->
   <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js')
