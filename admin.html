@@ -3,90 +3,103 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin · FA Sublimações</title>
-  <link rel="stylesheet" href="css/style.css">
+  <title>Admin — Canecas & Cia</title>
   <link rel="stylesheet" href="css/admin.css">
 </head>
 <body>
-  <div class="admin-container">
-    <header class="admin-header">
-      <h1>⚙️ Painel Administrativo</h1>
-      <button id="logoutBtn" class="btn-logout">Sair</button>
-    </header>
-    
-    <!-- Login -->
-    <div id="loginArea" class="login-area">
-      <div class="login-box">
-        <h2>🔐 Acesso Restrito</h2>
-        <input type="password" id="senhaAdmin" placeholder="Digite a senha" class="login-input">
-        <button id="loginBtn" class="btn-primary">Entrar</button>
-        <p style="color: var(--text-muted); font-size: 0.8rem; margin-top: 12px;">Senha padrão: admin123</p>
-      </div>
-    </div>
-    
-    <!-- Dashboard -->
-    <div id="dashboardArea" style="display: none;">
-      <div class="dashboard-stats" id="dashboardStats">
-        <div class="stat-card"><h3>📦 Produtos</h3><span id="totalProdutos">0</span></div>
-        <div class="stat-card"><h3>🏷️ Promoções</h3><span id="totalPromocoes">0</span></div>
-        <div class="stat-card"><h3>📂 Categorias</h3><span id="totalCategorias">0</span></div>
-        <div class="stat-card"><h3>⚠️ Sem Estoque</h3><span id="totalSemEstoque">0</span></div>
-      </div>
-      
-      <div class="admin-actions">
-        <button id="addProductBtn" class="btn-primary">➕ Adicionar Produto</button>
-        <button id="refreshBtn" class="btn-secondary">🔄 Atualizar</button>
-      </div>
-      
-      <div class="admin-table-wrap">
-        <table class="admin-table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Nome</th>
-              <th>Preço</th>
-              <th>Estoque</th>
-              <th>Status</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
-          <tbody id="adminTableBody">
-            <!-- Produtos listados via JS -->
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-  
-  <!-- Modal de edição simplificado -->
-  <div class="modal" id="productEditModal">
-    <div class="modal-content" style="max-width: 700px;">
-      <button class="modal-close" id="editModalClose">✕</button>
-      <h2 id="editModalTitle">Editar Produto</h2>
-      <form id="editProductForm" style="display: grid; gap: 12px;">
-        <input type="hidden" id="editId">
-        <input type="text" id="editNome" placeholder="Nome" required>
-        <input type="text" id="editDescricao" placeholder="Descrição curta">
-        <input type="text" id="editCategoria" placeholder="Categoria">
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-          <input type="number" id="editPreco" placeholder="Preço R$" step="0.01">
-          <input type="number" id="editPrecoPromo" placeholder="Preço Promo R$" step="0.01">
-        </div>
-        <input type="number" id="editEstoque" placeholder="Estoque">
-        <select id="editBadge">
-          <option value="">Sem badge</option>
-          <option value="novo">Novo</option>
-          <option value="promocao">Promoção</option>
-          <option value="mais-vendido">Mais Vendido</option>
-        </select>
-        <div style="display: flex; gap: 12px;">
-          <label><input type="checkbox" id="editAtivo" checked> Ativo</label>
-        </div>
-        <button type="submit" class="btn-primary">💾 Salvar</button>
-      </form>
-    </div>
-  </div>
+  <header class="admin-header">
+    <h1>⚙️ Painel Admin — Canecas & Cia</h1>
+    <a href="index.html" class="btn-voltar">← Ver Loja</a>
+  </header>
 
-  <script src="js/admin.js" defer></script>
+  <main class="admin-container">
+    <section class="painel">
+      <h2>Adicionar / Editar Produto</h2>
+      <form id="formProduto" class="form-produto">
+        <input type="hidden" id="produtoId">
+
+        <label>Nome
+          <input type="text" id="nome" required>
+        </label>
+
+        <label>Descrição
+          <textarea id="descricao" rows="2" required></textarea>
+        </label>
+
+        <div class="linha-dupla">
+          <label>Preço (R$)
+            <input type="number" id="preco" step="0.01" min="0" required>
+          </label>
+          <label>Estoque
+            <input type="number" id="estoque" min="0" required>
+          </label>
+        </div>
+
+        <label>URL da Imagem
+          <input type="url" id="imagem" required>
+        </label>
+
+        <div class="linha-dupla">
+          <label>Categoria
+            <select id="categoria" required>
+              <option value="classica">Clássica</option>
+              <option value="geek">Geek</option>
+              <option value="personalizada">Personalizada</option>
+            </select>
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" id="destaque">
+            Destacar na página inicial
+          </label>
+        </div>
+
+        <div class="botoes-form">
+          <button type="submit" class="btn-salvar">Salvar Produto</button>
+          <button type="button" id="btnLimpar" class="btn-limpar">Limpar</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="painel">
+      <div class="painel-header">
+        <h2>Produtos Cadastrados</h2>
+        <button id="btnExportar" class="btn-exportar">📥 Exportar produtos.json</button>
+      </div>
+
+      <div class="upload-area">
+        <label for="fileImport" class="btn-importar">📂 Carregar produtos.json existente</label>
+        <input type="file" id="fileImport" accept=".json" hidden>
+        <small>Carregue o arquivo atual do seu servidor para editar.</small>
+      </div>
+
+      <table class="tabela-produtos">
+        <thead>
+          <tr>
+            <th>Imagem</th>
+            <th>Nome</th>
+            <th>Categoria</th>
+            <th>Preço</th>
+            <th>Estoque</th>
+            <th>Destaque</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="tbodyProdutos"></tbody>
+      </table>
+    </section>
+
+    <section class="painel instrucoes">
+      <h3>📌 Como publicar as alterações</h3>
+      <ol>
+        <li>Clique em <strong>Carregar produtos.json existente</strong> para importar o arquivo atual (opcional se estiver começando).</li>
+        <li>Adicione, edite ou remova produtos usando o formulário e a tabela.</li>
+        <li>Clique em <strong>Exportar produtos.json</strong> para baixar o arquivo atualizado.</li>
+        <li>Substitua o arquivo <code>data/produtos.json</code> no seu servidor pelo arquivo baixado.</li>
+        <li>Pronto! A loja passa a exibir os novos dados no próximo acesso.</li>
+      </ol>
+    </section>
+  </main>
+
+  <script src="js/admin.js"></script>
 </body>
 </html>
