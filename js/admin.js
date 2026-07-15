@@ -1,248 +1,135 @@
-// Admin JS
-const SENHA_ADMIN = 'admin123';
+let produtos = [];
+let proximoId = 1;
 
-let produtosAdmin = [];
-
-// Elementos
-const loginArea = document.getElementById('loginArea');
-const dashboardArea = document.getElementById('dashboardArea');
-const senhaInput = document.getElementById('senhaAdmin');
-const loginBtn = document.getElementById('loginBtn');
-const logoutBtn = document.getElementById('logoutBtn');
-const tableBody = document.getElementById('adminTableBody');
-const editModal = document.getElementById('productEditModal');
-const editModalClose = document.getElementById('editModalClose');
-const editForm = document.getElementById('editProductForm');
-const addBtn = document.getElementById('addProductBtn');
-const refreshBtn = document.getElementById('refreshBtn');
-
-// Carregar produtos
-function carregarProdutosAdmin() {
-  // Tentar carregar do localStorage ou do JSON
-  const local = localStorage.getItem('produtosFA');
-  if (local) {
-    try {
-      produtosAdmin = JSON.parse(local);
-    } catch {
-      produtosAdmin = [];
+// Tenta carregar o JSON existente ao abrir
+async function carregarInicial() {
+  try {
+    const resp = await fetch('data/produtos.json');
+    if (resp.ok) {
+      const data = await resp.json();
+      produtos = data.produtos || [];
+      atualizarProximoId();
+      renderizarTabela();
     }
-  } else {
-    // Carregar do JSON mock
-    produtosAdmin = mockProdutos();
-    localStorage.setItem('produtosFA', JSON.stringify(produtosAdmin));
+  } catch (e) {
+    console.log('Nenhum produtos.json encontrado ainda. Comece adicionando produtos.');
   }
-  atualizarDashboard();
+}
+
+function atualizarProximoId() {
+  proximoId = produtos.length > 0
+    ? Math.max(...produtos.map(p => p.id)) + 1
+    : 1;
+}
+
+// Submissão do formulário
+document.getElementById('formProduto').addEventListener('submit', (e) => {
+  e.preventDefault();
+
+  const id = document.getElementById('produtoId').value;
+  const produto = {
+    id: id ? parseInt(id) : proximoId++,
+    nome: document.getElementById('nome').value.trim(),
+    descricao: document.getElementById('descricao').value.trim(),
+    preco: parseFloat(document.getElementById('preco').value),
+    imagem: document.getElementById('imagem').value.trim(),
+    categoria: document.getElementById('categoria').value,
+    estoque: parseInt(document.getElementById('estoque').value),
+    destaque: document.getElementById('destaque').checked
+  };
+
+  if (id) {
+    const idx = produtos.findIndex(p => p.id === parseInt(id));
+    produtos[idx] = produto;
+  } else {
+    produtos.push(produto);
+  }
+
+  limparFormulario();
   renderizarTabela();
+  alert('Produto salvo! Não esqueça de exportar o JSON.');
+});
+
+function limparFormulario() {
+  document.getElementById('formProduto').reset();
+  document.getElementById('produtoId').value = '';
 }
 
-// Salvar produtos
-function salvarProdutos() {
-  localStorage.setItem('produtosFA', JSON.stringify(produtosAdmin));
-  // Atualizar também o JSON em memória (seria necessário backend para persistir)
-}
+document.getElementById('btnLimpar').addEventListener('click', limparFormulario);
 
-// Mock igual ao do script principal
-function mockProdutos() {
-  return [
-    { id: 1, nome: 'Caneca "Café & Poesia"', descricao: 'Caneca de porcelana', categoria: 'canecas', preco: 49.90, precoPromocional: 39.90, estoque: 15, badge: 'promocao', ativo: true },
-    { id: 2, nome: 'Caneca Mágica', descricao: 'Caneca termocrômica', categoria: 'canecas-magicas', preco: 69.90, precoPromocional: 59.90, estoque: 8, badge: 'novo', ativo: true },
-    { id: 3, nome: 'Long Drink Personalizado', descricao: 'Copo longo', categoria: 'long-drink', preco: 59.90, precoPromocional: 49.90, estoque: 12, badge: 'mais-vendido', ativo: true },
-    { id: 4, nome: 'Squeeze 500ml', descricao: 'Garrafa squeeze', categoria: 'squeezes', preco: 45.90, precoPromocional: 39.90, estoque: 20, badge: 'promocao', ativo: true }
-  ];
-}
-
-// Atualizar dashboard
-function atualizarDashboard() {
-  const ativos = produtosAdmin.filter(p => p.ativo !== false);
-  const promocoes = ativos.filter(p => p.badge === 'promocao');
-  const semEstoque = ativos.filter(p => p.estoque <= 0);
-  const categorias = new Set(ativos.map(p => p.categoria));
-  
-  document.getElementById('totalProdutos').textContent = ativos.length;
-  document.getElementById('totalPromocoes').textContent = promocoes.length;
-  document.getElementById('totalCategorias').textContent = categorias.size;
-  document.getElementById('totalSemEstoque').textContent = semEstoque.length;
-}
-
-// Renderizar tabela
+// Renderiza a tabela
 function renderizarTabela() {
-  if (!tableBody) return;
-  tableBody.innerHTML = produtosAdmin.map(p => `
+  const tbody = document.getElementById('tbodyProdutos');
+  if (produtos.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#999;">Nenhum produto cadastrado</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = produtos.map(p => `
     <tr>
-      <td>${p.id}</td>
+      <td><img src="${p.imagem}" alt="${p.nome}"></td>
       <td>${p.nome}</td>
-      <td>R$ ${(p.precoPromocional || p.preco).toFixed(2)}</td>
+      <td>${p.categoria}</td>
+      <td>R$ ${p.preco.toFixed(2).replace('.', ',')}</td>
       <td>${p.estoque}</td>
-      <td><span class="status-badge ${p.ativo !== false ? 'ativo' : 'inativo'}">${p.ativo !== false ? 'Ativo' : 'Inativo'}</span></td>
-      <td class="table-actions">
-        <button onclick="editarProduto(${p.id})" title="Editar">✏️</button>
-        <button onclick="duplicarProduto(${p.id})" title="Duplicar">📋</button>
-        <button onclick="toggleAtivo(${p.id})" title="${p.ativo !== false ? 'Ocultar' : 'Ativar'}">${p.ativo !== false ? '🙈' : '👁️'}</button>
-        <button onclick="excluirProduto(${p.id})" class="btn-danger" title="Excluir">🗑️</button>
+      <td>${p.destaque ? '<span class="badge-sim">Sim</span>' : '<span class="badge-nao">Não</span>'}</td>
+      <td>
+        <button class="acoes-btn btn-editar" onclick="editarProduto(${p.id})">Editar</button>
+        <button class="acoes-btn btn-excluir" onclick="excluirProduto(${p.id})">Excluir</button>
       </td>
     </tr>
   `).join('');
 }
 
-// Funções de gerenciamento
 function editarProduto(id) {
-  const produto = produtosAdmin.find(p => p.id === id);
-  if (!produto) return;
-  
-  document.getElementById('editId').value = produto.id;
-  document.getElementById('editNome').value = produto.nome;
-  document.getElementById('editDescricao').value = produto.descricao || '';
-  document.getElementById('editCategoria').value = produto.categoria || '';
-  document.getElementById('editPreco').value = produto.preco || '';
-  document.getElementById('editPrecoPromo').value = produto.precoPromocional || '';
-  document.getElementById('editEstoque').value = produto.estoque || 0;
-  document.getElementById('editBadge').value = produto.badge || '';
-  document.getElementById('editAtivo').checked = produto.ativo !== false;
-  
-  document.getElementById('editModalTitle').textContent = `✏️ Editar: ${produto.nome}`;
-  editModal.classList.add('open');
-}
-
-function duplicarProduto(id) {
-  const original = produtosAdmin.find(p => p.id === id);
-  if (!original) return;
-  
-  const novo = { ...original, id: Math.max(...produtosAdmin.map(p => p.id)) + 1, nome: original.nome + ' (cópia)' };
-  produtosAdmin.push(novo);
-  salvarProdutos();
-  atualizarDashboard();
-  renderizarTabela();
-  mostrarToast('✅ Produto duplicado com sucesso!');
-}
-
-function toggleAtivo(id) {
-  const produto = produtosAdmin.find(p => p.id === id);
-  if (!produto) return;
-  produto.ativo = produto.ativo === false ? true : false;
-  salvarProdutos();
-  atualizarDashboard();
-  renderizarTabela();
-  mostrarToast(`✅ Produto ${produto.ativo !== false ? 'ativado' : 'ocultado'}!`);
+  const p = produtos.find(x => x.id === id);
+  document.getElementById('produtoId').value = p.id;
+  document.getElementById('nome').value = p.nome;
+  document.getElementById('descricao').value = p.descricao;
+  document.getElementById('preco').value = p.preco;
+  document.getElementById('estoque').value = p.estoque;
+  document.getElementById('imagem').value = p.imagem;
+  document.getElementById('categoria').value = p.categoria;
+  document.getElementById('destaque').checked = p.destaque;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function excluirProduto(id) {
-  if (!confirm('Tem certeza que deseja excluir este produto?')) return;
-  produtosAdmin = produtosAdmin.filter(p => p.id !== id);
-  salvarProdutos();
-  atualizarDashboard();
-  renderizarTabela();
-  mostrarToast('✅ Produto excluído!');
-}
-
-// Salvar edição
-editForm?.addEventListener('submit', function(e) {
-  e.preventDefault();
-  const id = parseInt(document.getElementById('editId').value);
-  const produto = produtosAdmin.find(p => p.id === id);
-  if (!produto) return;
-  
-  produto.nome = document.getElementById('editNome').value;
-  produto.descricao = document.getElementById('editDescricao').value;
-  produto.categoria = document.getElementById('editCategoria').value;
-  produto.preco = parseFloat(document.getElementById('editPreco').value) || 0;
-  produto.precoPromocional = parseFloat(document.getElementById('editPrecoPromo').value) || null;
-  produto.estoque = parseInt(document.getElementById('editEstoque').value) || 0;
-  produto.badge = document.getElementById('editBadge').value || '';
-  produto.ativo = document.getElementById('editAtivo').checked;
-  
-  salvarProdutos();
-  atualizarDashboard();
-  renderizarTabela();
-  editModal.classList.remove('open');
-  mostrarToast('✅ Produto atualizado!');
-});
-
-// Adicionar novo
-addBtn?.addEventListener('click', function() {
-  const novoId = Math.max(...produtosAdmin.map(p => p.id)) + 1;
-  const novo = {
-    id: novoId,
-    nome: 'Novo Produto',
-    descricao: 'Descrição do produto',
-    categoria: 'outros',
-    preco: 0,
-    precoPromocional: null,
-    estoque: 0,
-    badge: '',
-    ativo: true
-  };
-  produtosAdmin.push(novo);
-  salvarProdutos();
-  atualizarDashboard();
-  renderizarTabela();
-  editarProduto(novoId);
-});
-
-// Login
-loginBtn?.addEventListener('click', function() {
-  if (senhaInput.value === SENHA_ADMIN) {
-    loginArea.style.display = 'none';
-    dashboardArea.style.display = 'block';
-    carregarProdutosAdmin();
-    mostrarToast('✅ Bem-vindo, administrador!');
-  } else {
-    alert('Senha incorreta!');
+  if (confirm('Tem certeza que deseja excluir este produto?')) {
+    produtos = produtos.filter(p => p.id !== id);
+    renderizarTabela();
   }
-});
-
-senhaInput?.addEventListener('keypress', function(e) {
-  if (e.key === 'Enter') loginBtn.click();
-});
-
-logoutBtn?.addEventListener('click', function() {
-  loginArea.style.display = 'flex';
-  dashboardArea.style.display = 'none';
-  senhaInput.value = '';
-  mostrarToast('👋 Até logo!');
-});
-
-// Fechar modal de edição
-editModalClose?.addEventListener('click', () => editModal.classList.remove('open'));
-editModal?.addEventListener('click', (e) => {
-  if (e.target === editModal) editModal.classList.remove('open');
-});
-
-// Refresh
-refreshBtn?.addEventListener('click', function() {
-  carregarProdutosAdmin();
-  mostrarToast('🔄 Dados atualizados!');
-});
-
-// Toast simplificado
-function mostrarToast(msg) {
-  const toast = document.getElementById('toast') || criarToast();
-  toast.textContent = msg;
-  toast.classList.add('show');
-  setTimeout(() => toast.classList.remove('show'), 2500);
 }
 
-function criarToast() {
-  const t = document.createElement('div');
-  t.id = 'toast';
-  t.className = 'toast';
-  document.body.appendChild(t);
-  return t;
-}
+// Exportar JSON
+document.getElementById('btnExportar').addEventListener('click', () => {
+  const dados = JSON.stringify({ produtos }, null, 2);
+  const blob = new Blob([dados], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = 'produtos.json';
+  link.click();
+  URL.revokeObjectURL(url);
+});
 
-// Inicializar (se já logado)
-document.addEventListener('DOMContentLoaded', function() {
-  // Verificar se já está logado (para demo, mantém)
-  if (localStorage.getItem('adminLogado') === 'true') {
-    loginArea.style.display = 'none';
-    dashboardArea.style.display = 'block';
-    carregarProdutosAdmin();
-  }
-  
-  // Salvar login
-  const originalLogin = loginBtn.click;
-  loginBtn.addEventListener('click', function() {
-    if (senhaInput.value === SENHA_ADMIN) {
-      localStorage.setItem('adminLogado', 'true');
+// Importar JSON
+document.getElementById('fileImport').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (evt) => {
+    try {
+      const data = JSON.parse(evt.target.result);
+      produtos = data.produtos || [];
+      atualizarProximoId();
+      renderizarTabela();
+      alert(`${produtos.length} produtos carregados com sucesso!`);
+    } catch (err) {
+      alert('Arquivo inválido. Verifique se é um produtos.json válido.');
     }
-  });
+  };
+  reader.readAsText(file);
 });
+
+carregarInicial();
