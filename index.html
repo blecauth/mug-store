@@ -2,158 +2,68 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5">
-  <title>FA Sublimações · Canecas personalizadas</title>
-  <meta name="description" content="Loja de canecas personalizadas, canecas mágicas, long drink, squeezes, azulejos e muito mais. Qualidade e criatividade em cada detalhe.">
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#FFFFFF">
-  <meta property="og:title" content="FA Sublimações · Canecas personalizadas">
-  <meta property="og:description" content="Loja virtual de canecas e presentes personalizados com alta qualidade.">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://seudominio.github.io/fasublimacoes/">
-  <meta property="og:image" content="img/og-image.jpg">
-  <link rel="icon" href="img/favicon.ico" type="image/x-icon">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Canecas & Cia — Loja</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <!-- HEADER -->
-  <header class="header" role="banner">
-    <div class="header-top container">
-      <div class="logo">
-        <span class="logo-icon">☕</span>
-        <span class="logo-text">FA<span class="highlight">Sublimações</span></span>
-      </div>
-      <div class="header-actions">
-        <a href="#" class="whatsapp-header" aria-label="WhatsApp">
-          <span class="icon">💬</span> <span class="label">WhatsApp</span>
-        </a>
-        <button class="cart-icon" aria-label="Carrinho">
-          🛒 <span class="cart-badge">0</span>
-        </button>
-        <button class="menu-toggle" id="menuToggle" aria-label="Menu">☰</button>
-      </div>
+  <header class="header">
+    <div class="container header-content">
+      <h1 class="logo">☕ Canecas & Cia</h1>
+      <nav class="nav">
+        <a href="#produtos">Produtos</a>
+        <a href="#destaques">Destaques</a>
+        <a href="admin.html">Admin</a>
+      </nav>
+      <button class="btn-carrinho" id="btnCarrinho">
+        🛒 <span id="contadorCarrinho">0</span>
+      </button>
     </div>
-    
-    <!-- Barra de Pesquisa -->
-    <div class="search-container container">
-      <div class="search-bar">
-        <input type="search" id="searchInput" placeholder="Buscar produto, código ou categoria..." aria-label="Buscar produtos">
-        <button id="searchBtn" aria-label="Pesquisar">🔍</button>
-      </div>
-    </div>
-
-    <!-- Menu de Categorias -->
-    <nav class="main-nav" id="mainNav" role="navigation">
-      <ul class="nav-list container">
-        <li><a href="#" data-category="all" class="active">Todos</a></li>
-        <li><a href="#" data-category="canecas">Canecas</a></li>
-        <li><a href="#" data-category="canecas-magicas">Canecas Mágicas</a></li>
-        <li><a href="#" data-category="long-drink">Long Drink</a></li>
-        <li><a href="#" data-category="squeezes">Squeezes</a></li>
-        <li><a href="#" data-category="azulejos">Azulejos</a></li>
-        <li><a href="#" data-category="almofadas">Almofadas</a></li>
-        <li><a href="#" data-category="outros">Outros</a></li>
-      </ul>
-    </nav>
   </header>
 
-  <main>
-    <!-- BANNER -->
-    <section class="banner-carousel" aria-label="Destaques">
-      <div class="carousel-track" id="carouselTrack">
-        <div class="carousel-slide active" style="background: linear-gradient(135deg, #FF6B35, #FF8F65);">
-          <div class="slide-content">
-            <h2>🎨 Canecas Exclusivas</h2>
-            <p>Design único para você</p>
-            <a href="#" class="btn-primary">Ver ofertas</a>
-          </div>
-        </div>
-        <div class="carousel-slide" style="background: linear-gradient(135deg, #FF6B35, #FFA07A);">
-          <div class="slide-content">
-            <h2>✨ Canecas Mágicas</h2>
-            <p>Surpreenda com a mudança de cor</p>
-            <a href="#" class="btn-primary">Explorar</a>
-          </div>
-        </div>
-        <div class="carousel-slide" style="background: linear-gradient(135deg, #E85D2C, #FF8C5A);">
-          <div class="slide-content">
-            <h2>🥤 Linha Long Drink</h2>
-            <p>Estilo e sofisticação</p>
-            <a href="#" class="btn-primary">Comprar</a>
-          </div>
-        </div>
-      </div>
-      <button class="carousel-btn prev" id="carouselPrev" aria-label="Anterior">‹</button>
-      <button class="carousel-btn next" id="carouselNext" aria-label="Próximo">›</button>
-      <div class="carousel-indicators" id="carouselIndicators"></div>
+  <section class="hero">
+    <div class="container">
+      <h2>Sua caneca perfeita está aqui</h2>
+      <p>Escolha entre dezenas de modelos exclusivos.</p>
+    </div>
+  </section>
+
+  <main class="container">
+    <section id="destaques">
+      <h3 class="secao-titulo">Destaques</h3>
+      <div class="grid-produtos" id="gridDestaques"></div>
     </section>
 
-    <!-- FILTROS -->
-    <section class="filters container" aria-label="Filtros rápidos">
-      <div class="filter-group">
-        <button class="filter-chip active" data-filter="all">Todos</button>
-        <button class="filter-chip" data-filter="promocao">🔥 Promoção</button>
-        <button class="filter-chip" data-filter="novo">✨ Novo</button>
-        <button class="filter-chip" data-filter="mais-vendido">⭐ Mais Vendido</button>
+    <section id="produtos">
+      <h3 class="secao-titulo">Todos os Produtos</h3>
+      <div class="filtros">
+        <button class="filtro-btn ativo" data-categoria="todos">Todos</button>
+        <button class="filtro-btn" data-categoria="classica">Clássica</button>
+        <button class="filtro-btn" data-categoria="geek">Geek</button>
+        <button class="filtro-btn" data-categoria="personalizada">Personalizada</button>
       </div>
-      <div class="sort-group">
-        <select id="sortSelect" aria-label="Ordenar">
-          <option value="relevancia">Relevância</option>
-          <option value="menor-preco">Menor preço</option>
-          <option value="maior-preco">Maior preço</option>
-        </select>
-      </div>
-    </section>
-
-    <!-- GRADE DE PRODUTOS -->
-    <section class="products-grid container" id="productsGrid" aria-label="Produtos">
-      <!-- Skeleton loading -->
+      <div class="grid-produtos" id="gridProdutos"></div>
     </section>
   </main>
 
-  <!-- MODAL -->
-  <div class="modal" id="productModal" role="dialog" aria-modal="true">
-    <div class="modal-content">
-      <button class="modal-close" id="modalClose" aria-label="Fechar">✕</button>
-      <div class="modal-body" id="modalBody"></div>
+  <aside class="carrinho" id="carrinho">
+    <div class="carrinho-header">
+      <h3>Seu Carrinho</h3>
+      <button id="fecharCarrinho">✕</button>
     </div>
-  </div>
-
-  <!-- TOAST -->
-  <div id="toast" class="toast" role="alert"></div>
-
-  <!-- FOOTER -->
-  <footer class="footer" role="contentinfo">
-    <div class="container footer-grid">
-      <div class="footer-col">
-        <h4>☕ FA Sublimações</h4>
-        <p>Canecas personalizadas com amor e criatividade. Feitas sob medida para você.</p>
-      </div>
-      <div class="footer-col">
-        <h4>📱 Contato</h4>
-        <p><a href="#" class="whatsapp-link">💬 WhatsApp</a></p>
-        <p><a href="#">📷 Instagram</a></p>
-        <p><a href="#">📘 Facebook</a></p>
-      </div>
-      <div class="footer-col">
-        <h4>📍 Endereço</h4>
-        <p>Rua das Canecas, 123 - Centro</p>
-        <p>São Paulo - SP</p>
-        <div class="map-placeholder">🗺️ Mapa interativo</div>
-      </div>
+    <div class="carrinho-itens" id="carrinhoItens"></div>
+    <div class="carrinho-total">
+      <strong>Total: R$ <span id="totalCarrinho">0,00</span></strong>
+      <button class="btn-finalizar">Finalizar Compra</button>
     </div>
-    <div class="footer-bottom">
-      <p>&copy; 2026 FA Sublimações · Todos os direitos reservados.</p>
+  </aside>
+
+  <footer class="footer">
+    <div class="container">
+      <p>© 2026 Canecas & Cia — Todos os direitos reservados.</p>
     </div>
   </footer>
 
-  <script src="js/script.js" defer></script>
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js')
-        .then(() => console.log('Service Worker registrado'))
-        .catch(() => console.log('SW falhou'));
-    }
-  </script>
+  <script src="js/script.js"></script>
 </body>
 </html>
